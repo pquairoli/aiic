@@ -3,15 +3,26 @@
 
 ### The Challenge
 
-Providing modern applications and infrastructure for use at a retail location provides significant and unique challenges. Retail locations are especially vulnerable to attack because they are highly visible and rarely have the same level of high-cost network protection as does a datacenter or cloud-provider. As well, without well trained IT staff on-site, an attacker has a better chance of entering, acting and moving laterally without detection. Basing retail infrastructure components on a secure, transactional operating system like SUSE SLE Micro is the first step in protecting against malicious actors.
+Providing modern applications and infrastructure for use in a retail environment provides unique challenges. Retail environments are especially vulnerable to attack because they are highly visible and rarely have the same level of network protection as a datacenter or cloud-provider. The lack of on-site, dedicated, and trained IT staff, both physical and remote attacke have a better chance of succeeding without detection. 
 
-Businesses rely on a full suite of applications to run at peak efficiency and require application specialists to ensure correct configuration and optimal operation. However, it's certainly not possible to require customers to base application specialists at every retail location. Just the same, without the proper software orchestration tools, managing infrastructure remotely is cumbersome and extremely risky. Fortunately, SUSE Rancher and K3s distribution of Kubernetes are the perfect application management platform for any IT components destined to work in any remote location.
+<PJQ>!Basing retail infrastructure components on a secure, transactional operating system like SUSE SLE Micro is the first step in protecting against malicious actors.<<part of the solution not the challenge. </PJQ>
 
-Applications and infrastructure that require an "always on" network connection from a retail location to corporate headquarters creates a massive attack surface area. Fortunately, SUSE Rancher's architecture is designed specifically for environments where both upstream and downstream communications are interrupted regularly. This allows the retail location to keep it's production network disconnected from the Internet for long periods of time. SUSE Rancher has no problem syncing up needed data in short and random windows of communication with its corporate-maintained, upstream resources. 
+Businesses rely on a full suite of applications to run at peak efficiency and require application specialists to ensure correct configuration and optimal operation. However, it's certainly not possible to require customers to base application specialists at every retail location. Just the same, without the proper software orchestration tools, managing infrastructure remotely is cumbersome and extremely risky.  <<< is this two challenges or one?  
 
-### Overview
+<PJQ>!Fortunately, SUSE Rancher and K3s distribution of Kubernetes are the perfect application management platform for any IT components destined to work in any remote location. <<part of the solution not the challenge. </PJQ>
 
-This design was specifically created for providers of IT software and hardware designed for retail outlets with no on-site IT support. It emphasizes a high level of security, ease of management for remote IT management staff, and ease of use for on-site staff. The two primary components of the installation are the highly available installation of SUSE Rancher and the Point-of-Service units that are pre-installed with a hardened and standardized image of SLE Micro with a K3s configured as a single-node cluster. 
+Applications and infrastructure that require an "always on" network connection from a retail location to corporate headquarters creates a massive attack surface. 
+
+<PJQ>!Fortunately, SUSE Rancher's architecture is designed specifically for environments where both upstream and downstream communications are interrupted regularly. This allows the retail location to keep it's production network disconnected from the Internet for long periods of time. SUSE Rancher has no problem syncing up needed data in short and random windows of communication with its corporate-maintained, upstream resources. <<part of the solution </PJQ>
+
+### Overview  <PJQ> This feels like a component overview  but lacks detail about why k8s or k3s is a better solution than a traditional brach office solution</PJQ>
+
+This design was specifically created for providers of IT software and hardware designed for retail outlets with no on-site IT support. It emphasizes a high level of security, ease of management, and limited need for on-site staff. 
+
+<PJQ>I feel this sentence jumps to the point too quickly.  You cover some great points below, such as Standardizing OS Deployment, automating repeatable tasks, and building a resilliant Orchistration solution.  Then how does each offering fit into the solution </PJQ>
+
+The two primary components of the installation are the highly available installation of SUSE Rancher and the Point-of-Service units that are pre-installed with a hardened and standardized image of SLE Micro with a K3s configured as a single-node cluster. 
+<PJQ> you have three sentences below that start with SLE Micro, and two topics on Rancher and k3s, can we consolidate the topics better? </PJQ> 
 
 SUSE Rancher server provides a stable platform for the orchestration of the Kubernetes-native applications that run on the Point-of-Service units. Rancher is flexible that it can even apply different applications to units that are being used for different functions, such as a management workstation. The unique combination of SLE Micro, K3s, and Rancher is able to achieve the highest level of software stability such that only the most basic skills of plugging in cables, powering on, and logging in are usually required for retail location staff to keep their store running at peak efficiency. 
 
@@ -24,9 +35,12 @@ SLE Micro is a lightweight immutable OS that’s optimized for edge use cases. I
 K3s is packaged as a single < 40MB binary that reduces the dependencies and steps needed to install, run and auto-update a production Kubernetes cluster. K3s run on all x86_64 platforms but is also optimized for ARM64 and ARMv7.
 
 That SLEMicro runs as an immutable O/S in terms of installed binaries, and K3s is delivered as a single, completely static binary presents a much reduced attack surface area as compared to traditional operating systems and Kubernetes distributions.
+<PJQ> Consider using points from the SLE Micro Selling Guide https://suse.highspot.com/items/60755d6e02d235540fb8aed7?lfrm=irel.3 </PJQ>
 
 ### Architecture
-
+<PJQ> a high-level drawing would be useful</PJQ>
+<PJQ> this feels like a benefit section
+Consider using points from the edge selling guide https://suse.highspot.com/items/60f62d34de97ce53b32da01f?lfrm=irel.1 </PJQ>
 Upon power up/boot up, the function of the Point-of-Service unit, i.e. point-of-purchase-lane-4 or general-manager-station can be established by applying cluster labels to the single-node K3s cluster on the unit. SUSE Rancher uses the labels to populate the unit with the applications and settings it applicable to its current function. Troubleshooting problematic units is no more difficult than replacing with a spare unit.
 
 Effective security is applied consistently across each layer of the architecture. SUSE Rancher supports this perfectly by allows Role Based Access Control programmatically across all Points-of-Service units. This can include assuring that only management staff can access business critical units and applications.
@@ -35,11 +49,11 @@ Securing the software supply chain is one of the most important, and least under
 
 SUSE Rancher maintains secure application deployment in several ways. Firstly, it ensures all on-site K3s clusters only pull images from the on-site, private registry. As well, it ensures the K3s clusters validate the SHA256 hash of every container image of the applications they run. Finally, SUSE Rancher will pull the container image hash values from the secure, corporate GitHub compatible repository, which is separate from the upstream container image registry.
 
-### Centralized Role Based Access Control
+### Centralized Role Based Access Control <PJQ> these sections were not called out as challenges. they feel tacked-on but are extremely important.  </PJQ>
 
 SUSE Rancher is capable of managing the roles and privileges granted to headquarters-based as well as retail location users and groups of users. For this reason, every K3s cluster at all retail locations is guaranteed to have a consistent, well understood set of policies. Administrators can easily create configurations to allow the minimum access required for each job function. 
 
-### Automatic Application Delivery and Management
+### Automatic Application Delivery and Management 
 
 SUSE Rancher Continuous Delivery is the key to effective application deployment and management at remote sites, including retail store locations. While its capabilities are quite advanced, its base operational methods are quite easy to understand. As the K3s, single-node cluster on each unit is imported into the on-site SUSE Rancher server, Rancher Continuous Delivery identifies the applications to be delivered to the unit based on the labels applied to the cluster. The appropriate Kubernetes applications are automatically deployed and run on the unit. The level of granularity of the labels can be very high, such as the unit's primary function, or down to the level individual applications and configurations. 
 
